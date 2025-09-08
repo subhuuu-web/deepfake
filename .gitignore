@@ -1,0 +1,19 @@
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment
+venv/
+
+# Ignore model files
+*.h5
+
+# Ignore notebooks checkpoints
+.ipynb_checkpoints/
+
+# Ignore environment variables
+.env
+
+# VS Code settings
+.vscode/
+

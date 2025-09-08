@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection Result - AI Shield</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="floating-particles" id="particles"></div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>Detection Result</h1>
+            <p class="subtitle">Analysis complete</p>
+        </div>
+        {% if result.lower() == 'authentic' or result.lower() == 'real' or result.lower() == 'genuine' %}
+            <div class="result-status authentic animate" id="result-status">
+                <div class="result-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div>Image is <strong>{{ result.title() }}</strong></div>
+                <div style="font-size: 14px; margin-top: 8px; opacity: 0.8;">
+                    This image appears to be genuine and unmodified.
+                </div>
+            </div>
+        {% else %}
+            <div class="result-status deepfake animate" id="result-status">
+                <div class="result-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div>{{ result.title() }} Detected</div>
+                <div style="font-size: 14px; margin-top: 8px; opacity: 0.8;">
+                    This image shows signs of AI manipulation.
+                </div>
+            </div>
+        {% endif %}
+        <div class="result-image-container">
+            <img src="{{ filepath }}" alt="Analyzed Image" class="result-image">
+        </div>
+        <a href="/" class="back-btn">
+            <i class="fas fa-redo"></i>
+            Analyze Another Image
+        </a>
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-eye"></i></div>
+                <div class="feature-text">Deep Analysis</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-certificate"></i></div>
+                <div class="feature-text">Verified Result</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-shield"></i></div>
+                <div class="feature-text">Trusted AI</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+        window.addEventListener('load', function() {
+            const resultStatus = document.getElementById('result-status');
+            const resultImage = document.querySelector('.result-image');
+            setTimeout(() => {
+                resultStatus.style.transform = 'translateY(0)';
+                resultStatus.style.opacity = '1';
+            }, 300);
+            setTimeout(() => {
+                resultImage.style.transform = 'scale(1)';
+                resultImage.style.opacity = '1';
+            }, 600);
+            setTimeout(() => {
+                resultStatus.classList.add('animate');
+            }, 1000);
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const resultStatus = document.getElementById('result-status');
+            const resultImage = document.querySelector('.result-image');
+            resultStatus.style.transform = 'translateY(20px)';
+            resultStatus.style.opacity = '0';
+            resultStatus.style.transition = 'all 0.6s ease';
+            resultImage.style.transform = 'scale(0.8)';
+            resultImage.style.opacity = '0';
+            resultImage.style.transition = 'all 0.6s ease';
+        });
+        const backBtn = document.querySelector('.back-btn');
+        const resultImage = document.querySelector('.result-image');
+        backBtn.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px) scale(1.02)';
+        });
+        backBtn.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+        resultImage.addEventListener('click', function() {
+            if (this.style.position === 'fixed') {
+                this.style.position = '';
+                this.style.top = '';
+                this.style.left = '';
+                this.style.width = '';
+                this.style.height = '';
+                this.style.zIndex = '';
+                this.style.cursor = 'pointer';
+                this.style.transform = '';
+                document.body.style.overflow = '';
+                const backdrop = document.querySelector('.image-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+            } else {
+                const backdrop = document.createElement('div');
+                backdrop.className = 'image-backdrop';
+                backdrop.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 999;
+                    cursor: pointer;
+                `;
+                document.body.appendChild(backdrop);
+                this.style.position = 'fixed';
+                this.style.top = '50%';
+                this.style.left = '50%';
+                this.style.width = 'auto';
+                this.style.height = '80vh';
+                this.style.zIndex = '1000';
+                this.style.cursor = 'zoom-out';
+                this.style.transform = 'translate(-50%, -50%)';
+                document.body.style.overflow = 'hidden';
+                backdrop.addEventListener('click', () => {
+                    this.click();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

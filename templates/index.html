@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Shield - Deepfake Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="floating-particles" id="particles"></div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>Deepfake Detection System</h1>
+            <p class="subtitle">Advanced AI-powered image verification</p>
+        </div>
+        <form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
+            <label class="upload-btn">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <input type="file" name="file" id="file-input" required hidden>
+                Choose Image
+            </label>
+            <div id="file-name" class="file-name"></div>
+            <button type="submit">
+                <i class="fas fa-search"></i>
+                Upload & Analyze
+            </button>
+            <div class="loader" id="loader"></div>
+            <div class="loading-text" id="loading-text">Analyzing with AI... Please wait</div>
+        </form>
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <div class="feature-text">Lightning Fast</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                <div class="feature-text">Secure & Private</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                <div class="feature-text">AI Powered</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+        const fileInput = document.getElementById("file-input");
+        const fileNameDisplay = document.getElementById("file-name");
+        fileInput.addEventListener("change", function() {
+            if (this.files.length > 0) {
+                const file = this.files[0];
+                const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                fileNameDisplay.innerHTML = `<i class="fas fa-image"></i> ${file.name} • ${fileSize}MB`;
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file.');
+                    this.value = '';
+                    fileNameDisplay.textContent = '';
+                    return;
+                }
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB.');
+                    this.value = '';
+                    fileNameDisplay.textContent = '';
+                    return;
+                }
+            } else {
+                fileNameDisplay.textContent = "";
+            }
+        });
+        function showLoader() {
+            const loader = document.getElementById("loader");
+            const loadingText = document.getElementById("loading-text");
+            const button = document.querySelector('button[type="submit"]');
+            loader.style.display = "block";
+            loadingText.style.display = "block";
+            button.style.opacity = "0.5";
+            button.disabled = true;
+        }
+        const uploadBtn = document.querySelector('.upload-btn');
+        const container = document.querySelector('.container');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            container.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        ['dragenter', 'dragover'].forEach(eventName => {
+            container.addEventListener(eventName, highlight, false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            container.addEventListener(eventName, unhighlight, false);
+        });
+        function highlight() {
+            container.style.transform = 'translateY(-5px) scale(1.02)';
+            container.style.boxShadow = '0 40px 80px rgba(102, 126, 234, 0.3)';
+        }
+        function unhighlight() {
+            container.style.transform = '';
+            container.style.boxShadow = '';
+        }
+        container.addEventListener('drop', handleDrop, false);
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                const event = new Event('change', { bubbles: true });
+                fileInput.dispatchEvent(event);
+            }
+        }
+        const buttons = document.querySelectorAll('.upload-btn, button[type="submit"]');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                if (!this.disabled) {
+                    this.style.transform = 'translateY(-2px) scale(1.02)';
+                }
+            });
+            button.addEventListener('mouseleave', function() {
+                if (!this.disabled) {
+                    this.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
